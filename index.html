@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Sophie Bluel - Architecte d'intérieur</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+		crossorigin="anonymous">
+	<meta name="description" content="">
+	<link rel="stylesheet" href="./assets/style.css">
+	<link rel="stylesheet" href="./assets/modal.css">
+</head>
+
+<body>
+	<div class="hidden" id="banner">
+	</div>
+	<header>
+		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+		<nav>
+			<ul>
+				<a href="index.html" class="link" >projets</a>
+                <a href="contact.html" class="link" >contact</a>
+                <a href="login.html" class="link" id="loginStatus">login</a>
+                <img src="./assets/icons/instagram.png" alt="Instagram">
+			</ul>
+		</nav>
+	</header>
+	<main>
+		<section id="introduction">
+			<figure>
+				<img src="./assets/images/sophie-bluel.png" alt="">
+				<a href="#" class="hidden"><i class="fa-regular fa-pen-to-square"></i>modifier</a>
+			</figure>
+			<article>
+				<a href="#" class="hidden"><i class="fa-regular fa-pen-to-square"></i>modifier</a>
+				<h2>Designer d'espace</h2>
+				<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison
+					finale du chantier.</p>
+				<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les
+					couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du
+					chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
+				<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG,
+					décorateur(trice)</p>
+			</article>
+		</section>
+		<section id="portfolio">
+			<div class="mesProjets">
+				<h2>Mes Projets</h2>
+				<button class="hidden" id="showmodal"><i class="fa-regular fa-pen-to-square"></i>modifier</button>
+			</div>
+
+			<div id="modal" class="modal" disp>
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<h2>Galerie photo</h2>
+					<div class="modal-body">
+					</div>
+					<div class="modalBtn">
+						<button id="ajouter-photo">Ajouter une photo</button>
+						<button id="supprimer-galerie">Supprimer la galerie</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="add-photo-modal" class="modal">
+				<div class="modal-content">
+					<div class="head">
+						<span class="backward" id ="backward"> ← </span>
+						<span class="close">&times;</span>
+					</div>
+					<h2>Ajout photo</h2>
+					<form id="add-photo-form" enctype="multipart/form-data">
+						<div class="picture flexCenter column" id="Upload_img">
+							<img src="assets/icons/image.png" alt="logo image" id="logo_image" />
+							<label class="picture_input flexCenter">+ Ajouter photo<input type="file" id="image"
+									name="image" accept=".jpg, .png" /></label>
+							<p>jpg, png: 4mo max</p>
+						</div><br><br>
+						<span id="error-img"></span>
+						<label for="title">Titre</label><br><br>
+						<input type="text" id="title" name="title" required><br><br>
+						<label for="category">Catégorie</label><br><br>
+						<select id="category" name="category">
+							<option value="objets">Objets</option>
+							<option value="appartements">Appartements</option>
+							<option value="hotel_restaurant">Hotels & restaurants</option>
+						</select><br><br>
+						<input type="submit" value="Valider" id="valider">
+					</form>
+				</div>
+			</div>
+
+			<!--Filtre-->
+			<div class="filter" id=filter>
+			</div>
+			<div class="gallery"></div>
+		</section>
+		<section id="contact">
+			<h2>Contact</h2>
+			<p>Vous avez un projet ? Discutons-en !</p>
+			<form action="#" method="post">
+				<label for="name">Nom</label>
+				<input type="text" name="name" id="name">
+				<label for="email">Email</label>
+				<input type="email" name="email" id="email">
+				<label for="message">Message</label>
+				<textarea name="message" id="message" cols="30" rows="10"></textarea>
+				<input type="submit" value="Envoyer">
+			</form>
+		</section>
+	</main>
+
+	<footer>
+		<nav>
+			<ul>
+				<li>Mentions Légales</li>
+			</ul>
+		</nav>
+	</footer>
+
+	<script>
+		fetch("http://localhost:5678/api/works")
+			.then(response => response.json())
+			.then(data => {
+				const div = document.querySelector("#portfolio .gallery");
+				data.forEach(elt => {
+					console.log(elt)
+					const parent = document.createElement('figure')
+					const child_img = document.createElement('img')
+					const child_figcaption = document.createElement('figcaption')
+
+					child_figcaption.innerHTML = elt.title
+					child_img.src = elt.imageUrl
+					child_img.alt = elt.title
+
+					parent.className = elt.category.name
+					parent.append(child_img)
+					parent.append(child_figcaption)
+					div.append(parent)
+				})
+			})
+			.catch(error => console.error(error));
+
+		const filters_arr = [
+			{ text: 'Tous', filter: 'Tous' },
+			{ text: 'Objets', filter: 'Objets' },
+			{ text: 'Appartements', filter: 'Appartements' },
+			{ text: 'Hôtels & restaurants', filter: 'Hotels & restaurants' }
+		],
+			div_filter = document.querySelector('#portfolio .filter')
+		//Intégration dynamique des boutons
+		filters_arr.forEach(item => {
+			const btn = document.createElement('button')
+			btn.className = 'btn' + item.filter
+			btn.innerText = item.text
+			btn.addEventListener("click", (e) => filterItems(e, item.filter))
+			div_filter.append(btn)
+		})
+
+		function filterItems(e, className) {
+			const tmp = document.querySelectorAll('section>div>figure');
+			tmp.forEach(item => {
+				item.classList.remove('hidden');
+				if (item.className !== className && className !== 'Tous') {
+					item.classList.add('hidden');
+				}
+			});
+		}
+		const buttons = document.querySelectorAll(".filter button");
+
+		buttons.forEach((button) => {
+			button.addEventListener("click", () => {
+				buttons.forEach((btn) => {
+					btn.classList.remove("active");
+					btn.style.backgroundColor = "white";
+					btn.style.color = "#1D6154";
+				});
+
+				button.classList.add("active");
+				button.style.backgroundColor = "#1D6154";
+				button.style.color = "white";
+			});
+		});
+		var divfilter = document.getElementById("filter");
+		
+		//changement du login en logout
+		if (localStorage.getItem("token")) {
+			document.querySelector("#loginStatus").href = "#logout"
+			loginStatus.textContent = 'logout';
+			loginStatus.addEventListener("click", e => {
+				localStorage.removeItem("token")
+				location.href = ""
+			})
+		}
+		const header = document.querySelector("header");
+		const hiddenElements = document.querySelectorAll(".hidden");
+		if (localStorage.getItem("token")) {
+			divfilter.style.display = "none";
+			const p = document.createElement("p");
+			const a = document.createElement("a");
+			a.href = "#";
+			const i = document.createElement("i");
+			i.classList.add("fa-regular", "fa-pen-to-square");
+			a.appendChild(i);
+			p.textContent = "Mode édition";
+			p.appendChild(a);
+			const button = document.createElement("button");
+			button.textContent = "Publier les changements";
+			const existingDiv = document.getElementById("banner");
+			existingDiv.appendChild(p);
+			existingDiv.appendChild(button);
+			hiddenElements.forEach((element) => {
+				element.classList.remove("hidden");
+			});
+			header.classList.add("loggedHeader");
+			banner.style.display = "flex";
+		}
+
+
+	</script>
+	<script type="module" src="modal.js"></script>
+
+</body>
+
+</html>
